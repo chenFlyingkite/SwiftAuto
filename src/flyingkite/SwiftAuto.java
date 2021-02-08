@@ -20,6 +20,7 @@ public class SwiftAuto {
     }
 
     private static void toDoubles() {
+        // (|U)Int(|8|16|32|64) (++|--)
         final String from = "Double";
         String[] into = {"Int", "Int64", "Float", "CGFloat"};
         Set<String> commt = new HashSet<>();

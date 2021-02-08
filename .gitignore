@@ -15,7 +15,7 @@
 *.war
 *.nar
 *.ear
-*.zip
+#*.zip
 *.tar.gz
 *.rar
 
@@ -25,3 +25,6 @@ hs_err_pid*
 #IntelliJ
 *.idea
 *.iml
+
+# Mac's .DS_Store
+.DS_Store

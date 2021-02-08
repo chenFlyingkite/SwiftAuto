@@ -1,0 +1,8 @@
+// Settings in here override those in "Default/Preferences.sublime-settings",
+// and are overridden in turn by syntax-specific settings.
+{
+    "draw_white_space": "all",
+    "preview_on_click": false,
+    "font_size": 16,
+    "translate_tabs_to_spaces":true,
+}
