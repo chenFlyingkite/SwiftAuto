@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SwiftAuto {
+    // https://www.sublimetext.com/docs/1/commands
+    // https://www.sublimetext.com/docs/3/key_bindings.html
     public static void main(String[] args) {
         imports();
         typeConversion();
@@ -16,11 +18,28 @@ public class SwiftAuto {
     }
 
     public static void typeConversion() {
+        toDoubleOfCGFloat();
         toDoubles();
+    }
+    // (|U)Int(|8|16|32|64) (++|--)
+
+    private static void toDoubleOfCGFloat() {
+        String from = "CGFloat";
+        String to = "Double";
+        String sign = "lf()";
+
+        String ind = indent(1);
+        String comm = ind + "/// Return %s(self)";
+        String line = ind + "public func %s -> %s { return %s(self); }";
+
+        ln("extension %s {", from);
+        ln(comm, to);
+        ln(line, sign, to, to);
+        ln("}");
+        ln();
     }
 
     private static void toDoubles() {
-        // (|U)Int(|8|16|32|64) (++|--)
         final String from = "Double";
         String[] into = {"Int", "Int64", "Float", "CGFloat"};
         Set<String> commt = new HashSet<>();
