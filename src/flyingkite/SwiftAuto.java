@@ -18,10 +18,24 @@ public class SwiftAuto {
     }
 
     public static void typeConversion() {
+        intExt();
         toDoubleOfCGFloat();
+        toRoundedInt();
         toDoubles();
     }
     // (|U)Int(|8|16|32|64) (++|--)
+
+    private static void intExt() {
+        String ind = indent(1);
+
+        ln("extension Int {");
+        ln(ind + "public func hex() -> String { return String.init(format:\"%%x\", self); }");
+        ln(ind + "public static postfix func ++ (x: inout Int) -> Int { x = x + 1; return x; }");
+        ln(ind + "public static postfix func -- (x: inout Int) -> Int { x = x - 1; return x; }");
+        ln("}");
+        ln();
+    }
+
 
     private static void toDoubleOfCGFloat() {
         String from = "CGFloat";
@@ -39,11 +53,32 @@ public class SwiftAuto {
         ln();
     }
 
+
+    private static void toRoundedInt() {
+        // 'Float16' is only available in iOS 14.0 or later
+        String[] toRnd = {"Float", "Double", "CGFloat"//, "Float16"
+        };
+        String to = "Int";
+
+        String ind = indent(1);
+        String line = ind + "public func %s -> %s { return %s(self.rounded()); }";
+        String signa = "roundedInt()";
+
+        //---- code start
+        ln("// Rounding");
+        for (String s : toRnd) {
+            ln("extension %s {", s);
+            ln(line, signa, to, to);
+            ln("}");
+        }
+        ln();
+        //---- code end
+    }
+
     private static void toDoubles() {
         final String from = "Double";
-        String[] into = {"Int", "Int64", "Float", "CGFloat"};
+        String[] into = {"Int", "Int64", "Float"};
         Set<String> commt = new HashSet<>();
-        commt.add("CGFloat");
         //String[] into = {"Int"};
         final String[] ops = {"+", "-", "*", "/"};
         final String returns = from;
@@ -55,6 +90,8 @@ public class SwiftAuto {
         }
         final String ts = "%" + tn + "s";
 
+        //---- code start
+        ln("// + - * / to Double ");
         ln("extension %s {", from);
         for (String small : into) {
             String ind = indent(1);
@@ -74,6 +111,7 @@ public class SwiftAuto {
             ln();
         }
         ln("}");
+        //---- code end
     }
 
 
