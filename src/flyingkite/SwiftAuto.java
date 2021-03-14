@@ -22,6 +22,7 @@ public class SwiftAuto {
         toDoubleOfCGFloat();
         toRoundedInt();
         toDoubles();
+        toStrings();
     }
     // (|U)Int(|8|16|32|64) (++|--)
 
@@ -84,11 +85,7 @@ public class SwiftAuto {
         final String returns = from;
         final String cons = from; // constructor
         // take the formatter of type as ts
-        int tn = from.length(); // = max(from, types)
-        for (String s : into) {
-            tn = Math.max(tn, s.length());
-        }
-        final String ts = "%" + tn + "s";
+        String ts = ksOf(from, into);
 
         //---- code start
         ln("// + - * / to Double ");
@@ -114,6 +111,22 @@ public class SwiftAuto {
         //---- code end
     }
 
+    public static void toStrings() {
+        final String from = "String";
+        String[] into = {"Int", "Int64", "Float", "Double"};
+        String ts = ksOf(from, into);
+        ln("extension %s {", from);
+        for (int i = 0; i < into.length; i++) {
+            String to = into[i];
+            String d1 = indent(1);
+            String fmt1 = d1 + "public static func + (lhs: " + ts + ", rhs: " + ts + ") -> %s { return lhs + %s(rhs); }";
+            String fmt2 = d1 + "public static func + (lhs: " + ts + ", rhs: " + ts + ") -> %s { return %s(lhs) + rhs; }";
+            ln(fmt1, from, to, from, from);
+            ln(fmt2, to, from, from, from);
+        }
+        ln("}");
+        ln();
+    }
 
     private static String indent(int n) {
         final String indent = "    ";
@@ -122,7 +135,7 @@ public class SwiftAuto {
         final StringBuilder s = new StringBuilder(indent);
         int x = n;
         while (x > 0) {
-            if (x % 2 == 1) {
+            if ((x & 1) == 1) {
                 sb.append(s);
             }
             s.append(s);
@@ -131,10 +144,20 @@ public class SwiftAuto {
         return sb.toString();
     }
 
+    // to be "%ks", with k = max(a_i.length & src.length)
+    private static String ksOf(String src, String[] a) {
+        // take the formatter of type as ts
+        int k = src.length();
+        for (String s : a) {
+            k = Math.max(k, s.length());
+        }
+        return "%" + (k > 0 ? k : "") + "s";
+    }
+
     private static void ln() {
         ln("");
     }
     private static void ln(String f, Object... p) {
-        System.out.println(String.format(f, p));
+        System.out.printf((f) + "%n", p);
     }
 }
