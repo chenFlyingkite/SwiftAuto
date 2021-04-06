@@ -62,14 +62,19 @@ public class SwiftAuto {
         String to = "Int";
 
         String ind = indent(1);
-        String line = ind + "public func %s -> %s { return %s(self.rounded()); }";
-        String signa = "roundedInt()";
+        String[] lines = new String[]{
+                 ind + "public func roundInt() -> %s { return %s(self.rounded()); }"
+                ,ind + "public func ceilInt()  -> %s { return %s((self + 0.5).rounded()); }"
+                ,ind + "public func floorInt() -> %s { return %s((self - 0.5).rounded()); }"
+        };
 
         //---- code start
         ln("// Rounding");
         for (String s : toRnd) {
             ln("extension %s {", s);
-            ln(line, signa, to, to);
+            for (String x : lines) {
+                ln(x, to, to);
+            }
             ln("}");
         }
         ln();
